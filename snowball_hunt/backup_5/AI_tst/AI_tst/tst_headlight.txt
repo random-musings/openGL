@@ -1,0 +1,76 @@
+void redsquare()
+{
+
+    glPushMatrix();
+    glLoadIdentity();
+
+    //GLfloat pos0[] = {2,40,20,1};
+    //GLfloat dir0[] = {0,-2, -3,1};
+    GLfloat pos0[] = {2,-2*courseHeight + 60,20,1};
+    GLfloat dir0[] = {0,-2*courseHeight+10, -3,1};
+
+	GLfloat pos1[] = {6,40,20,1};
+    GLfloat dir1[] = {1.5f,-2, -3,1};
+
+    glTranslatef(7,-32,-8);
+
+    glDisable( GL_TEXTURE_2D);
+    glColor3f( 1, 0, 0 );
+    glPointSize( 10 );
+    glBegin( GL_POINTS);
+        glVertex3fv( dir0);
+    glEnd();
+
+ //   headLight( GL_LIGHT0, pos0, dir0 );
+ //   headLight( GL_LIGHT1, pos1, dir1 );
+
+		///ROTATE LIGHT
+	if (rotateLight>360)
+		rotateLight=0;
+	rotateLight+=rotateLightSteps;
+
+//	cout << " rotateLight :" << rotateLight << " " << endl;
+    GLfloat pos2[] = {rotateLightPosX,rotateLightPosY,rotateLightPosZ,1};
+    //GLfloat dir0[] = {0,-2, -3,1};
+  //  GLfloat dir2[] = {5,-3, -3.0f,1};
+  //  GLfloat dir2[] = {5,-5, -3.0f,1};
+	  GLfloat dir2[] = {rotateLightDirX,rotateLightDirY, rotateLightDirZ,1};
+	//GLfloat PI = 3.14159;
+	GLfloat radians_angle = rotateLight* PI/180;
+	GLfloat newX = cos(radians_angle)*dir2[0]+ dir2[2]* sin(radians_angle) ;//x
+	GLfloat newZ = -sin(radians_angle)*dir2[0] + dir2[2]* cos(radians_angle)  ;//y
+	
+	dir2[0] = newX ;//x
+	//dir2[1] = mouseY;//y
+	dir2[2] = newZ;
+	headLight( GL_LIGHT2, pos2, dir2 );
+
+	
+	glColor3f( 1, 0, 0 );
+    glBegin( GL_POLYGON );
+        glVertex2f( 0,0 );
+        glVertex2f( 5,0 );
+        glVertex2f( 5,5 );
+        glVertex2f( 0,5 );
+    glEnd();
+
+    glEnable( GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
+
+void headLight( GLint light, GLfloat pos[], GLfloat dir[] )
+{
+    GLfloat dif0[] = {0.5,0.5,0.5,1};
+    glLightfv( light, GL_DIFFUSE, dif0);
+//    glDisable( GL_LIGHT0 );
+    GLfloat dif[] = {2,2,2,1};
+    glEnable( light );
+    glLightfv( light, GL_POSITION, pos );
+    glLightfv( light, GL_SPOT_DIRECTION, dir );
+    glLightfv( light, GL_DIFFUSE, dif );
+    GLfloat exp(50.0f);
+    glLightfv( light, GL_SPOT_EXPONENT, &exp );
+    GLfloat cutoff(45);
+    glLightf( light, GL_SPOT_CUTOFF, cutoff);
+}
